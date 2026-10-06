@@ -1,11 +1,10 @@
 {
   "name": "matsuri-light",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
-  "description": "Matsuri Light tournament website with server-side admin authentication, team registration, Midtrans GoPay payments, and Fonnte notifications.",
-  "main": "server.js",
+  "description": "Matsuri Light tournament website with Vercel API, standalone registration, and optional Midtrans/Fonnte integrations.",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server.local.js",
     "generate:secret": "node scripts/generate-secret.js",
     "generate:password": "node scripts/generate-password-hash.js"
   },
