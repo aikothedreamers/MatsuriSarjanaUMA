@@ -1,0 +1,87 @@
+const KEY="matsuriLightTeams";
+const RACE_KEY="matsuriLightRace";
+const DEFAULT_RACE_PATH="assets/race-preview.json";
+const defaults=[
+ {id:"ml-01",name:"Katsu Team",trainer:"Trainer Katsu",status:"Active",seed:1,members:[
+   {name:"Tokai Teio",role:"Frontliner",style:"Pace Chaser",parent:""},
+   {name:"Mejiro McQueen",role:"Backliner",style:"Late Surger",parent:""},
+   {name:"Kitasan Black",role:"Frontliner",style:"Runner",parent:""}
+ ]},
+ {id:"ml-02",name:"Uma Rising",trainer:"Trainer Rei",status:"Registered",seed:2,members:[]},
+ {id:"ml-03",name:"Tracen Stars",trainer:"Trainer Hikari",status:"Registered",seed:3,members:[]},
+ {id:"ml-04",name:"Matsuri Force",trainer:"Trainer Miko",status:"Registered",seed:4,members:[]}
+];
+let raceData=null;
+
+function getTeams(){try{const raw=localStorage.getItem(KEY);if(raw){const data=JSON.parse(raw);if(Array.isArray(data))return data;}}catch(e){}return defaults}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function getMembers(team){if(Array.isArray(team.members))return team.members;return String(team.roster||"").split(/\r?\n|,/).map(x=>x.trim()).filter(Boolean).map(name=>({name}))}
+function render(){
+ const teams=getTeams(),grid=document.getElementById("teamGrid");if(!grid)return;
+ document.getElementById("statTeams").textContent=teams.length;
+ document.getElementById("statActive").textContent=teams.filter(t=>t.status==="Active"||t.status==="Champion").length;
+ document.getElementById("teamCountLabel").textContent=teams.length+" TEAMS";
+ grid.innerHTML=teams.map(t=>`<article class="team-card" tabindex="0" role="button" data-team-id="${esc(t.id)}" aria-label="View ${esc(t.name)}"><span class="seed">SEED ${esc(t.seed)}</span><h3>${esc(t.name)}</h3><p>${esc(t.trainer||"Trainer TBD")}</p><span class="status ${esc(t.status)}">${esc(t.status).toUpperCase()}</span></article>`).join("")||'<div class="empty">NO TEAMS REGISTERED</div>';
+}
+function openTeam(id){
+ const team=getTeams().find(t=>String(t.id)===String(id));if(!team)return;const members=getMembers(team);
+ document.getElementById("modalSeed").textContent=`SEED ${team.seed}`;
+ const status=document.getElementById("modalStatus");status.textContent=String(team.status||"Registered").toUpperCase();status.className=`status ${esc(team.status||"Registered")}`;
+ document.getElementById("modalTeamName").textContent=team.name;document.getElementById("modalTrainer").textContent=team.trainer||"Trainer TBD";
+ document.getElementById("modalRosterCount").textContent=`${members.length} MEMBER${members.length===1?"":"S"}`;
+ document.getElementById("modalRoster").innerHTML=members.length?members.map((m,i)=>`<div class="roster-item"><span>${esc(m.name)}</span><small>${esc(m.role||"ROLE TBD")} · ${esc(m.style||"STYLE TBD")}${m.parent?` · Parent: ${esc(m.parent)}`:""}</small></div>`).join(""):'<div class="empty-roster">ROSTER BELUM DIISI</div>';
+ const modal=document.getElementById("teamModal");modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+}
+function closeTeam(){const modal=document.getElementById("teamModal");modal.classList.remove("open");modal.setAttribute("aria-hidden","true");document.body.style.overflow=""}
+
+function profileUrl(h){return `https://media.gametora.com/umamusume/characters/portrait/trainee/256/${encodeURIComponent(h.cardId||h.charaId)}.png`}
+function normalizeApt(v){const n=Number(v);return ["G","F","E","D","C","B","A","S"][Math.max(0,Math.min(7,n))]||"—"}
+function styleName(v){return ({1:"FRONT",2:"PACE",3:"LATE",4:"END"})[Number(v)]||"STYLE"}
+function statBar(value,max=1700){return Math.max(3,Math.min(100,Number(value||0)/max*100))}
+function finishRank(h){return Number(h.finishOrder??0)+1}
+function skillLabel(id){const known={"200162":"Wet Conditions ○"};return known[String(id)]||`Skill #${id}`}
+function renderRaceCard(){
+ const card=document.getElementById("racePreviewCard");if(!card||!raceData)return;
+ const winner=raceData.horses.find(h=>finishRank(h)===1);
+ card.innerHTML=`<div class="race-course-info"><div><span class="race-tag">AFTER MATCH</span><h3>TRACK // ${raceData.courseDistance}M</h3><p>Tokyo · ${raceData.courseDistance}m · ${esc(raceData.ground||"Hard")} · ${esc(raceData.weather||"Clear")} · ${esc(raceData.season||"")}</p></div><div class="race-winner-mini"><small>WINNER</small><b>${esc(winner?.charaName||"—")}</b><span>${winner?formatTime(winner.finishTimeScaled):"—"}</span></div><button class="btn primary" type="button" id="openRaceBtn">VIEW AFTER MATCH</button></div>`;
+ document.getElementById("openRaceBtn").addEventListener("click",openRace);
+}
+function formatTime(v){return Number(v||0).toFixed(3)+"s"}
+function openRace(){
+ if(!raceData)return;
+ const sorted=[...raceData.horses].sort((a,b)=>finishRank(a)-finishRank(b));
+ document.getElementById("raceModalTitle").textContent=`TOKYO // ${raceData.courseDistance}M`;
+ document.getElementById("raceMeta").textContent=`RACE ${raceData.raceNo} · ${raceData.numRaceHorses} HORSES · ${raceData.rotation} TURN · HORSEACT ${raceData.horseACT_version||"—"}`;
+ document.getElementById("raceWeather").textContent=`${String(raceData.weather||"").toUpperCase()} / ${String(raceData.time||"").toUpperCase()}`;
+ document.getElementById("raceResultsList").innerHTML=sorted.map(h=>`<button type="button" class="race-result-row ${finishRank(h)===1?"winner":""}" data-horse-index="${h.horseIndex}"><span class="place">${String(finishRank(h)).padStart(2,"0")}</span><img src="${profileUrl(h)}" alt="" onerror="this.style.visibility='hidden'"><span class="result-name"><b>${esc(h.charaName)}</b><small>POST ${esc(h.postNumber)} · ${styleName(h.runningStyle)}</small></span><span class="result-time">${formatTime(h.finishTimeScaled)}</span></button>`).join("");
+ document.querySelectorAll(".race-result-row").forEach(btn=>btn.addEventListener("click",()=>showHorse(Number(btn.dataset.horseIndex))));
+ const first=sorted[0];showHorse(first?.horseIndex);
+ const modal=document.getElementById("raceModal");modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+}
+function showHorse(index){
+ const h=raceData.horses.find(x=>Number(x.horseIndex)===Number(index));if(!h)return;
+ const stats=[["SPD",h.speed],["STA",h.stamina],["POW",h.power],["GUT",h.guts],["WIT",h.wit]];
+ const apt=[["SPRINT",normalizeApt(h.properDistanceShort)],["MILE",normalizeApt(h.properDistanceMile)],["MEDIUM",normalizeApt(h.properDistanceMiddle)],["LONG",normalizeApt(h.properDistanceLong)]];
+ const styles=[["FRONT",normalizeApt(h.properRunningStyleNige)],["PACE",normalizeApt(h.properRunningStyleSenko)],["LATE",normalizeApt(h.properRunningStyleSashi)],["END",normalizeApt(h.properRunningStyleOikomi)]];
+ document.getElementById("horseProfile").innerHTML=`<div class="horse-profile-head"><img src="${profileUrl(h)}" alt="${esc(h.charaName)}" onerror="this.style.display='none'"><div><span class="profile-class">${styleName(h.runningStyle)} // EVAL</span><h3>${esc(h.charaName)}</h3><p>POST ${esc(h.postNumber)} · RANK #${finishRank(h)} · ${esc(h.motivation||"—")}</p></div><strong>${formatTime(h.finishTimeScaled)}</strong></div>
+ <div class="profile-section"><div class="profile-section-title"><span>RACE STATS</span><small>RAW</small></div>${stats.map(([n,v])=>`<div class="stat-line"><label>${n}</label><div class="stat-track"><i style="width:${statBar(v)}%"></i></div><b>${Number(v||0)}</b></div>`).join("")}</div>
+ <div class="apt-grid"><div><span>GROUND / DIST</span>${apt.map(x=>`<em>${x[0]} <b>${x[1]}</b></em>`).join("")}</div><div><span>STYLE</span>${styles.map(x=>`<em>${x[0]} <b>${x[1]}</b></em>`).join("")}</div></div>
+ <div class="profile-section skills"><div class="profile-section-title"><span>SKILLS ${h.skillIds?.length||0}</span><small>${h.talentLevel?`TALENT ★${h.talentLevel}`:""}</small></div><div class="skill-grid">${(h.skillIds||[]).map(id=>`<span class="skill-pill"><i></i>${esc(skillLabel(id))}</span>`).join("")}</div></div>`;
+}
+function closeRace(){const modal=document.getElementById("raceModal");modal.classList.remove("open");modal.setAttribute("aria-hidden","true");document.body.style.overflow=""}
+async function loadRace(){
+ try{
+   const saved=localStorage.getItem(RACE_KEY);
+   raceData=saved?JSON.parse(saved):await fetch(DEFAULT_RACE_PATH).then(r=>r.json());
+   renderRaceCard();
+ }catch(e){console.warn("Race preview unavailable",e)}
+}
+
+document.getElementById("teamGrid")?.addEventListener("click",e=>{const card=e.target.closest("[data-team-id]");if(card)openTeam(card.dataset.teamId)});
+document.getElementById("teamGrid")?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){const card=e.target.closest("[data-team-id]");if(card){e.preventDefault();openTeam(card.dataset.teamId)}}});
+document.querySelectorAll("[data-close-modal]").forEach(el=>el.addEventListener("click",closeTeam));
+document.querySelectorAll("[data-close-race]").forEach(el=>el.addEventListener("click",closeRace));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeTeam();closeRace()}});
+render();loadRace();
+window.addEventListener("storage",e=>{if(e.key===KEY)render();if(e.key===RACE_KEY){try{raceData=JSON.parse(e.newValue);renderRaceCard()}catch{}}});
+if("BroadcastChannel" in window){const channel=new BroadcastChannel("matsuri-light-sync");channel.addEventListener("message",e=>{if(e.data==="teams-updated")render();if(e.data==="race-updated")loadRace()})}

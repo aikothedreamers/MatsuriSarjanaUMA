@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matsuri Light — Uma Musume Tournament</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home"><span class="brand-mark" id="adminLogo" title="">ML</span><span>MATSURI <b>LIGHT</b></span></a>
+    <nav>
+      <a href="#home">HOME</a><a href="#teams">TEAMS</a><a href="#bracket">BRACKET</a>
+      <a href="#schedule">SCHEDULE</a><a href="#results">RESULTS</a><a href="registration.html">REGISTER</a><a href="#rules">RULES</a>
+      
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="scanline"></div>
+      <div class="hero-copy">
+        <div class="eyebrow">MATSURI LIGHT // COMMUNITY TOURNAMENT</div>
+        <h1>LET THE<br><em>RACE</em> BEGIN.</h1>
+        <p>Uma Musume team tournament dengan bracket, roster, jadwal, dan standings yang dapat dikelola langsung dari panel admin.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#teams">VIEW TEAMS</a>
+          <a class="btn" href="#bracket">OPEN BRACKET</a>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div><span id="statTeams">0</span><small>REGISTERED TEAMS</small></div>
+        <div><span>2026</span><small>SEASON</small></div>
+        <div><span id="statActive">0</span><small>ACTIVE</small></div>
+      </div>
+    </section>
+
+    <section class="ticker"><span>● SYSTEM ONLINE</span><span>MATSURI LIGHT</span><span>TRACEN // COMMUNITY RACING</span><span>ROSTER STATUS: OPEN</span></section>
+
+    <section id="teams" class="section">
+      <div class="section-head"><div><p class="kicker">01 // REGISTERED FIELD</p><h2>THE TEAMS</h2></div><span id="teamCountLabel">0 TEAMS</span></div>
+      <div id="teamGrid" class="team-grid"></div>
+    </section>
+
+    <section id="bracket" class="section dark-section">
+      <div class="section-head"><div><p class="kicker">02 // TOURNAMENT PATH</p><h2>BRACKET</h2></div><span>SEASON 01</span></div>
+      <div class="bracket">
+        <div class="round"><h3>QUARTER</h3><div class="match"><b>Match 01</b><span>Seed 01</span><span>Seed 08</span></div><div class="match"><b>Match 02</b><span>Seed 04</span><span>Seed 05</span></div></div>
+        <div class="round"><h3>SEMI FINAL</h3><div class="match tall"><b>SF 01</b><span>QF Winner</span><span>QF Winner</span></div></div>
+        <div class="round final-round"><h3>GRAND FINAL</h3><div class="match tall"><b>FINAL</b><span>FINALIST A</span><span>FINALIST B</span><strong>CHAMPION</strong></div></div>
+      </div>
+    </section>
+
+    <section id="schedule" class="section">
+      <div class="section-head"><div><p class="kicker">03 // RUN OF SHOW</p><h2>SCHEDULE</h2></div></div>
+      <div class="timeline">
+        <article><span>01</span><div><small>REGISTRATION</small><h3>TEAM REGISTRATION</h3><p>Submit team roster and trainer information.</p></div><b>OPEN</b></article>
+        <article><span>02</span><div><small>ROUND 01</small><h3>QUALIFICATION</h3><p>Teams race through the opening stage.</p></div><b>UPCOMING</b></article>
+        <article><span>03</span><div><small>FINALS</small><h3>GRAND FINAL</h3><p>The last teams fight for the Matsuri Light title.</p></div><b>LOCKED</b></article>
+      </div>
+    </section>
+
+
+    <section id="results" class="section dark-section">
+      <div class="section-head">
+        <div><p class="kicker">04 // AFTER MATCH</p><h2>RACE RESULTS</h2></div>
+        <span id="raceSourceLabel">HORSEACT</span>
+      </div>
+      <div id="racePreviewCard" class="race-preview-card"></div>
+    </section>
+
+    <section id="rules" class="section rules">
+      <div><p class="kicker">04 // EVENT PROTOCOL</p><h2>RULES</h2></div>
+      <div class="rule-list"><p><b>01</b> Setiap team wajib memiliki roster sesuai ketentuan event.</p><p><b>02</b> Perubahan roster dilakukan sebelum roster lock.</p><p><b>03</b> Hasil pertandingan dan standings menjadi acuan bracket.</p><p><b>04</b> Keputusan admin tournament bersifat final.</p></div>
+    </section>
+  </main>
+
+  <footer><span>MATSURI LIGHT © 2026</span><span>UMA MUSUME COMMUNITY TOURNAMENT</span><span class="footer-admin-hint" aria-hidden="true">ML</span></footer>
+
+
+  <div id="raceModal" class="race-modal" aria-hidden="true">
+    <div class="race-modal-backdrop" data-close-race></div>
+    <section class="race-modal-window" role="dialog" aria-modal="true" aria-labelledby="raceModalTitle">
+      <button class="modal-close" type="button" data-close-race aria-label="Close">×</button>
+      <div class="race-modal-header">
+        <div><p class="kicker">AFTER MATCH // HORSEACT REPLAY DATA</p><h2 id="raceModalTitle">RACE RESULT</h2><p id="raceMeta"></p></div>
+        <div class="race-weather" id="raceWeather"></div>
+      </div>
+      <div class="race-modal-body">
+        <div class="race-results-list" id="raceResultsList"></div>
+        <div class="horse-profile" id="horseProfile">
+          <div class="profile-empty">SELECT A HORSE TO VIEW THE FULL RESULT PROFILE</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="teamModal" class="team-modal" aria-hidden="true">
+    <div class="team-modal-backdrop" data-close-modal></div>
+    <section class="team-modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTeamName">
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+      <div class="modal-topline"><span id="modalSeed">SEED 01</span><span id="modalStatus" class="status">REGISTERED</span></div>
+      <p class="kicker">TEAM PROFILE // REGISTERED FIELD</p>
+      <h2 id="modalTeamName">TEAM NAME</h2>
+      <p id="modalTrainer" class="modal-trainer">TRAINER</p>
+      <div class="modal-divider"></div>
+      <div class="roster-head"><span>ROSTER</span><small id="modalRosterCount">0 UMA</small></div>
+      <div id="modalRoster" class="roster-list"></div>
+    </section>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

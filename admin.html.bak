@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matsuri Light — Admin Panel</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-body">
+  <header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">ML</span><span>MATSURI <b>LIGHT</b></span></a><nav><a href="index.html">← PUBLIC SITE</a></nav></header>
+  <main class="admin-wrap">
+    <div class="admin-title"><div><p class="kicker">CONTROL // TOURNAMENT MANAGEMENT</p><h1>ADMIN PANEL</h1><p>Kelola tim yang mendaftar. Data tersimpan di browser ini menggunakan localStorage.</p></div><button id="resetBtn" class="btn danger" type="button">RESET DATA</button></div>
+
+    <section class="panel race-import-panel">
+      <div class="panel-head"><h2>AFTER MATCH / HORSEACT</h2><span id="raceImportStatus">DEFAULT RACE</span></div>
+      <p class="admin-help">Import file JSON dari HorseACT untuk mengganti preview hasil race pada halaman publik. Data race disimpan di browser dan otomatis tersinkron.</p>
+      <div class="race-import-actions">
+        <label class="file-picker">IMPORT HORSEACT JSON<input id="raceJsonInput" type="file" accept=".json,application/json"></label>
+        <button id="clearRaceBtn" class="btn" type="button">USE DEFAULT RACE</button>
+      </div>
+      <div id="raceImportInfo" class="race-import-info">Default: Tokyo 1600m / 9 horses</div>
+    </section>
+
+    <section class="admin-grid">
+      <form id="teamForm" class="panel">
+        <div class="panel-head"><h2 id="formTitle">ADD TEAM</h2><span id="editingBadge">NEW</span></div>
+        <input type="hidden" id="teamId">
+        <label>Team Name<input id="name" required maxlength="40" placeholder="Contoh: Katsu Team"></label>
+        <label>Trainer / Captain<input id="trainer" maxlength="40" placeholder="Nama trainer"></label>
+        <label>Status<select id="status"><option value="Registered">Registered</option><option value="Active">Active</option><option value="Eliminated">Eliminated</option><option value="Champion">Champion</option></select></label>
+        <label>Seed<input id="seed" type="number" min="1" max="999" value="1"></label>
+        <label>Roster / Uma<textarea id="roster" rows="5" placeholder="Uma 1&#10;Uma 2&#10;Uma 3"></textarea></label>
+        <div class="form-actions"><button class="btn primary" type="submit">SAVE TEAM</button><button id="cancelBtn" class="btn" type="button">CLEAR</button></div>
+      </form>
+
+      <section class="panel">
+        <div class="panel-head"><h2>REGISTERED TEAMS</h2><span id="adminCount">0</span></div>
+        <div id="adminTeams" class="admin-team-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="memberModal" class="team-modal" aria-hidden="true">
+    <div class="team-modal-backdrop" data-close-member></div>
+    <section class="team-modal-card member-admin-card" role="dialog" aria-modal="true" aria-labelledby="memberModalTitle">
+      <button class="modal-close" type="button" data-close-member aria-label="Close">×</button>
+      <div class="modal-topline"><span id="memberTeamLabel">TEAM</span><span id="memberCountLabel">0 MEMBERS</span></div>
+      <p class="kicker">TEAM MANAGEMENT // MEMBER ROSTER</p>
+      <h2 id="memberModalTitle">TEAM MEMBERS</h2>
+      <p id="memberModalTrainer" class="modal-trainer"></p>
+      <div class="member-admin-layout">
+        <form id="memberForm" class="member-form">
+          <h3 id="memberFormTitle">ADD MEMBER</h3>
+          <input type="hidden" id="memberId">
+          <label>Member / Uma Name<input id="memberName" required maxlength="50" placeholder="Contoh: Tokai Teio"></label>
+          <label>Role / Position<input id="memberRole" maxlength="30" placeholder="Frontliner / Backliner / Support"></label>
+          <label>Style / Strategy<input id="memberStyle" maxlength="40" placeholder="Runner / Pace Chaser / Late Surger"></label>
+          <label>Parent / Support<input id="memberParent" maxlength="60" placeholder="Parent information"></label>
+          <div class="form-actions"><button class="btn primary" type="submit">SAVE MEMBER</button><button id="cancelMemberBtn" class="btn" type="button">CLEAR</button></div>
+        </form>
+        <div>
+          <div class="panel-head"><h3>ROSTER</h3><span id="rosterAdminCount">0</span></div>
+          <div id="memberList" class="member-admin-list"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

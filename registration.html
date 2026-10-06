@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matsuri Light — Team Registration</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="registration-page">
+  <header class="topbar">
+    <a class="brand" href="index.html#home"><span class="brand-mark" id="adminLogo" title="">ML</span><span>MATSURI <b>LIGHT</b></span></a>
+    <nav>
+      <a href="index.html#home">HOME</a><a href="index.html#teams">TEAMS</a><a href="index.html#bracket">BRACKET</a>
+      <a href="index.html#schedule">SCHEDULE</a><a href="index.html#results">RESULTS</a><a class="active" href="registration.html">REGISTER</a><a href="index.html#rules">RULES</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="registration" class="section registration-section registration-page-section">
+      <div class="section-head"><div><p class="kicker">01 // TEAM ENTRY</p><h1>REGISTER YOUR TEAM</h1></div><span id="registrationFeeLabel">PAY WITH GOPAY</span></div>
+      <div class="registration-layout">
+        <div class="registration-copy">
+          <p>Daftarkan satu team untuk Matsuri Light. Roster wajib berisi <b>3–5 Uma</b>. Setelah form dikirim, kamu akan diarahkan ke pembayaran Midtrans dengan metode <b>GoPay</b>.</p>
+          <div class="registration-steps"><span><b>01</b> TEAM</span><span><b>02</b> ROSTER</span><span><b>03</b> GOPAY</span></div>
+          <div class="registration-note"><b>PAYMENT FLOW</b><p>Isi data team → buat order → lanjut ke GoPay → tunggu verifikasi pembayaran. Team baru akan tampil di halaman TEAMS setelah pembayaran terkonfirmasi.</p></div>
+        </div>
+        <form id="registrationForm" class="registration-form">
+          <label>TEAM NAME<input id="regTeamName" required maxlength="40" placeholder="Katsu Team"></label>
+          <label>CAPTAIN / MANAGER<input id="regCaptain" required maxlength="60" placeholder="Nama captain"></label>
+          <label>WHATSAPP<input id="regWhatsapp" required maxlength="20" inputmode="tel" placeholder="08xxxxxxxxxx"></label>
+          <div class="registration-roster-head"><span>UMA ROSTER</span><b id="regRosterCount">3/5</b></div>
+          <div id="registrationRoster" class="registration-roster"></div>
+          <button class="btn primary" type="submit">CONTINUE TO GOPAY</button>
+          <p id="registrationStatus" class="registration-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>MATSURI LIGHT © 2026</span><span>UMA MUSUME COMMUNITY TOURNAMENT</span><span class="footer-admin-hint" aria-hidden="true">ML</span></footer>
+
+  <div id="paymentModal" class="payment-modal" aria-hidden="true"><div class="payment-backdrop" data-close-payment></div><section class="payment-card"><button class="modal-close" type="button" data-close-payment>×</button><p class="kicker">MATSURI LIGHT // PAYMENT</p><h2>COMPLETE REGISTRATION</h2><p id="paymentOrder" class="payment-order"></p><div id="paymentState" class="payment-state">PREPARING CHECKOUT…</div><div id="paymentAmount" class="payment-amount"></div><button id="openSnapAgain" class="btn primary" type="button" hidden>OPEN GOPAY CHECKOUT</button></section></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
